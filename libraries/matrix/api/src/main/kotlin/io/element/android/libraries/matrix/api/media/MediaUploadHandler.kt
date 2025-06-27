@@ -12,7 +12,7 @@ package io.element.android.libraries.matrix.api.media
  */
 interface MediaUploadHandler {
     /** Await the upload process to finish. */
-    suspend fun await(): Result<Unit>
+    suspend fun await(): Result<String>
 
     /** Cancel the upload process. */
     fun cancel()
