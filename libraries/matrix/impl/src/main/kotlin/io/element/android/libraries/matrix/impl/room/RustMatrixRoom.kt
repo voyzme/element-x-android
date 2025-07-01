@@ -7,6 +7,7 @@
 
 package io.element.android.libraries.matrix.impl.room
 
+import io.element.android.features.voicetranscription.VoiceMessageTranscriber
 import io.element.android.libraries.core.coroutine.CoroutineDispatchers
 import io.element.android.libraries.core.coroutine.childScope
 import io.element.android.libraries.core.extensions.mapFailure
@@ -176,9 +177,12 @@ class RustMatrixRoom(
 
     override val syncUpdateFlow: StateFlow<Long> = _syncUpdateFlow.asStateFlow()
 
+    private val voiceMessageTranscriber : VoiceMessageTranscriber = VoiceMessageTranscriber(liveTimeline, this, roomCoroutineScope)
+
     init {
         val powerLevelChanges = roomInfoFlow.map { it.userPowerLevels }.distinctUntilChanged()
         val membershipChanges = liveTimeline.membershipChangeEventReceived.onStart { emit(Unit) }
+        voiceMessageTranscriber.start()
         combine(membershipChanges, powerLevelChanges) { _, _ -> }
             // Skip initial one
             .drop(1)
