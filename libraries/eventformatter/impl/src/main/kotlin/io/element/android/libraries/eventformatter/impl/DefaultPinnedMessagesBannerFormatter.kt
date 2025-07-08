@@ -24,7 +24,9 @@ import io.element.android.libraries.matrix.api.timeline.item.event.MessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.NoticeMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.OtherMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.PollContent
+import io.element.android.libraries.matrix.api.timeline.item.event.RawSTTMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.RedactedContent
+import io.element.android.libraries.matrix.api.timeline.item.event.RefinedSTTMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.StickerContent
 import io.element.android.libraries.matrix.api.timeline.item.event.StickerMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.TextMessageType
@@ -105,6 +107,13 @@ class DefaultPinnedMessagesBannerFormatter @Inject constructor(
             is NoticeMessageType -> {
                 messageType.body
             }
+            is RawSTTMessageType -> {
+                ""
+            }
+            is RefinedSTTMessageType -> {
+                "Stt"
+            }
+
         }
     }
 

@@ -21,6 +21,8 @@ import io.element.android.libraries.matrix.api.timeline.item.event.OtherMessageT
 import io.element.android.libraries.matrix.api.timeline.item.event.TextMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.VideoMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.VoiceMessageType
+import io.element.android.libraries.matrix.api.timeline.item.event.RawSTTMessageType
+import io.element.android.libraries.matrix.api.timeline.item.event.RefinedSTTMessageType
 import io.element.android.libraries.matrix.impl.media.map
 import io.element.android.libraries.matrix.impl.timeline.reply.InReplyToMapper
 import org.matrix.rustcomponents.sdk.MessageType
@@ -110,6 +112,20 @@ class EventMessageMapper {
         }
         is MessageType.Other -> {
             OtherMessageType(type.msgtype, type.body)
+        }
+        is RustMessageType.RawStt -> {
+            RawSTTMessageType(
+                body = type.content.body,
+                language = type.content.language,
+                formatted = type.content.formatted?.map(),
+            )
+        }
+        is RustMessageType.RefinedStt -> {
+            RefinedSTTMessageType(
+                body = type.content.body,
+                formatted = type.content.formatted?.map(),
+                relatedEvent = type.content.relatedEvent,
+            )
         }
         else -> {
             OtherMessageType("Unsupported", "Unsupported message")

@@ -28,7 +28,9 @@ import io.element.android.libraries.matrix.api.timeline.item.event.NoticeMessage
 import io.element.android.libraries.matrix.api.timeline.item.event.OtherMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.PollContent
 import io.element.android.libraries.matrix.api.timeline.item.event.ProfileChangeContent
+import io.element.android.libraries.matrix.api.timeline.item.event.RawSTTMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.RedactedContent
+import io.element.android.libraries.matrix.api.timeline.item.event.RefinedSTTMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.RoomMembershipContent
 import io.element.android.libraries.matrix.api.timeline.item.event.StateContent
 import io.element.android.libraries.matrix.api.timeline.item.event.StickerContent
@@ -136,6 +138,12 @@ class DefaultRoomLastMessageFormatter @Inject constructor(
                 messageType.body
             }
             is NoticeMessageType -> {
+                messageType.body
+            }
+            is RawSTTMessageType -> {
+                ""
+            }
+            is RefinedSTTMessageType -> {
                 messageType.body
             }
         }

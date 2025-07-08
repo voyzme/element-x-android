@@ -7,6 +7,8 @@
 
 import java.net.URI
 
+include(":features:voicetranscription")
+
 pluginManagement {
     repositories {
         includeBuild("plugins")
