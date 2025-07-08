@@ -21,6 +21,8 @@ import java.io.File
 import javax.inject.Inject
 import io.element.android.libraries.di.RoomScope
 import io.element.android.libraries.di.SingleIn
+import io.element.android.libraries.matrix.api.timeline.item.event.RefinedSTTMessageType
+import io.element.android.libraries.matrix.api.timeline.item.event.VoiceMessageType
 
 // @SingleIn(RoomScope::class)
 class VoiceMessageTranscriber(// @Inject constructor(
@@ -32,8 +34,8 @@ class VoiceMessageTranscriber(// @Inject constructor(
         timeline.timelineItems
             .onEach { items ->
                 items.filterIsInstance<MatrixTimelineItem.Event>()
-                    //.filter { isVoiceMessage(it) && it.event.isOwn }
-                    // .filter { !hasTranscriptionAlready(it, items) }
+                    .filter { isVoiceMessage(it) && it.event.isOwn }
+                    .filter { !hasTranscriptionAlready(it, items) }
                     .forEach { item ->
                         scope.launch {
                             try {
@@ -54,12 +56,8 @@ class VoiceMessageTranscriber(// @Inject constructor(
     }
 
     private fun isVoiceMessage(item: MatrixTimelineItem.Event): Boolean {
-        // val content = item.event.content as? MessageContent ?: return false
-        // val isAudio = content.msgType == "m.audio"
-        // val isVoice = content.voiceMessageIndicator != null
-        // return isAudio && isVoice
-        // todo redo it
-        return true
+        val messageContent = item.event.content as? MessageContent ?: return false
+        return messageContent.type is VoiceMessageType
     }
 
     private fun hasTranscriptionAlready(
@@ -67,14 +65,14 @@ class VoiceMessageTranscriber(// @Inject constructor(
         allItems: List<MatrixTimelineItem>
     ): Boolean {
         val voiceEventId = voiceItem.event.eventId?.value ?: return false
-        return allItems.filterIsInstance<MatrixTimelineItem.Event>()
-            .any {
-                // val rawContent = it.event.content as? EventContent ?: return@any false
-                // rawContent.toString().contains("m.voice.transcription") &&
-                //    rawContent.toString().contains(voiceEventId)
-                // todo look for transcription linked to voice event id
-                return true
-            }
+
+        for (item in allItems) {
+            val event = item as? MatrixTimelineItem.Event ?: continue
+            val messageContent = event.event.content as? MessageContent ?: continue
+            val stt = messageContent.type as? RefinedSTTMessageType ?: continue
+            if (stt.relatedEvent == voiceEventId) return true
+        }
+        return false
     }
 
     private fun resolveAudioFile(item: MatrixTimelineItem.Event): File? {
