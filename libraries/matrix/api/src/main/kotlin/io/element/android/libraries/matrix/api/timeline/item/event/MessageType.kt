@@ -103,3 +103,16 @@ data class OtherMessageType(
     val msgType: String,
     val body: String,
 ) : MessageType
+
+data class RawSTTMessageType(
+    val body: String,
+    val language: String?,
+    val formatted: FormattedBody?,
+) : MessageType
+
+data class RefinedSTTMessageType(
+    val body: String,
+    val formatted: FormattedBody?,
+    val relatedEvent: String?,
+) : MessageType
+

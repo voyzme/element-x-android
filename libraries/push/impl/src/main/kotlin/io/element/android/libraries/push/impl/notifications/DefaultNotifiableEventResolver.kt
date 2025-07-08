@@ -32,6 +32,8 @@ import io.element.android.libraries.matrix.api.timeline.item.event.ImageMessageT
 import io.element.android.libraries.matrix.api.timeline.item.event.LocationMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.NoticeMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.OtherMessageType
+import io.element.android.libraries.matrix.api.timeline.item.event.RawSTTMessageType
+import io.element.android.libraries.matrix.api.timeline.item.event.RefinedSTTMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.StickerMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.TextMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.VideoMessageType
@@ -277,6 +279,8 @@ class DefaultNotifiableEventResolver @Inject constructor(
             is VideoMessageType -> messageType.bestDescription
             is LocationMessageType -> messageType.body
             is OtherMessageType -> messageType.body
+            is RawSTTMessageType -> ""
+            is RefinedSTTMessageType -> messageType.body
         }
     }
 

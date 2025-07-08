@@ -33,7 +33,7 @@ class MediaSender @Inject constructor(
         caption: String? = null,
         formattedCaption: String? = null,
         progressCallback: ProgressCallback? = null
-    ): Result<Unit> {
+    ): Result<String> {
         val compressIfPossible = sessionPreferencesStore.doesCompressMedia().first()
         return preProcessor
             .process(
@@ -58,7 +58,7 @@ class MediaSender @Inject constructor(
         mimeType: String,
         waveForm: List<Float>,
         progressCallback: ProgressCallback? = null
-    ): Result<Unit> {
+    ): Result<String> {
         return preProcessor
             .process(
                 uri = uri,
@@ -83,7 +83,7 @@ class MediaSender @Inject constructor(
             .handleSendResult()
     }
 
-    private fun Result<Unit>.handleSendResult() = this
+    private fun Result<String>.handleSendResult() = this
         .onFailure { error ->
             val job = ongoingUploadJobs.remove(Job)
             if (error !is CancellationException) {
@@ -99,7 +99,7 @@ class MediaSender @Inject constructor(
         progressCallback: ProgressCallback?,
         caption: String?,
         formattedCaption: String?,
-    ): Result<Unit> {
+    ): Result<String> {
         val handler = when (uploadInfo) {
             is MediaUploadInfo.Image -> {
                 sendImage(

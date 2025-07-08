@@ -27,6 +27,7 @@ import io.element.android.features.messages.impl.timeline.model.event.TimelineIt
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemTextContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemVideoContent
 import io.element.android.features.messages.impl.timeline.model.event.TimelineItemVoiceContent
+import io.element.android.features.messages.impl.timeline.model.event.TimelineItemUnknownContent
 import io.element.android.features.messages.impl.utils.TextPillificationHelper
 import io.element.android.libraries.androidutils.filesize.FileSizeFormatter
 import io.element.android.libraries.core.mimetype.MimeTypes
@@ -44,6 +45,8 @@ import io.element.android.libraries.matrix.api.timeline.item.event.MessageConten
 import io.element.android.libraries.matrix.api.timeline.item.event.MessageFormat
 import io.element.android.libraries.matrix.api.timeline.item.event.NoticeMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.OtherMessageType
+import io.element.android.libraries.matrix.api.timeline.item.event.RawSTTMessageType
+import io.element.android.libraries.matrix.api.timeline.item.event.RefinedSTTMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.StickerMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.TextMessageType
 import io.element.android.libraries.matrix.api.timeline.item.event.VideoMessageType
@@ -236,6 +239,25 @@ class TimelineItemContentMessageFactory @Inject constructor(
                     pillifiedBody = textPillificationHelper.pillify(body),
                     htmlDocument = null,
                     formattedBody = body.withLinks(),
+                    isEdited = content.isEdited,
+                )
+            }
+            is RawSTTMessageType -> {
+                TimelineItemTextContent(
+                    body = "",
+                    pillifiedBody = "",
+                    htmlDocument = null,
+                    formattedBody = "",
+                    isEdited = content.isEdited,
+                )
+            }
+            is RefinedSTTMessageType -> {
+                val body = messageType.body.trimEnd()
+                TimelineItemTextContent(
+                    body = body,
+                    pillifiedBody = textPillificationHelper.pillify(body),
+                    htmlDocument = messageType.formatted?.toHtmlDocument(permalinkParser = permalinkParser),
+                    formattedBody = parseHtml(messageType.formatted) ?: body.withLinks(),
                     isEdited = content.isEdited,
                 )
             }

@@ -16,10 +16,10 @@ class MediaUploadHandlerImpl(
     private val filesToUpload: List<File>,
     private val sendAttachmentJoinHandle: SendAttachmentJoinHandle,
 ) : MediaUploadHandler {
-    override suspend fun await(): Result<Unit> =
+    override suspend fun await(): Result<String> =
         runCatching {
-            sendAttachmentJoinHandle.join()
-            Unit
+            val response = sendAttachmentJoinHandle.join()
+            response.eventId()
         }
             .also { cleanUpFiles() }
 

@@ -246,7 +246,7 @@ class VoiceMessageComposerPresenter @Inject constructor(
         file: File,
         mimeType: String,
         waveform: List<Float>,
-    ): Result<Unit> {
+    ): Result<String> {
         val result = mediaSender.sendVoiceMessage(
             uri = file.toUri(),
             mimeType = mimeType,

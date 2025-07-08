@@ -19,6 +19,7 @@ android {
 setupAnvil()
 
 dependencies {
+    implementation(project(":features:voicetranscription"))
     releaseImplementation(libs.matrix.sdk)
     if (file("${rootDir.path}/libraries/rustsdk/matrix-rust-sdk.aar").exists()) {
         println("\nNote: Using local binary of the Rust SDK.\n")
